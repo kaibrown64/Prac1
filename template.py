@@ -1,8 +1,5 @@
 #!/usr/bin/python3
 """
-Python Practical Template
-Keegan Crankshaw
-Readjust this Docstring as follows:
 Names: Kai Brown
 Student Number: BRWKAI001
 Prac: Prac 1
@@ -15,27 +12,47 @@ import time
 from itertools import product
 
 # Global Variables
+LED_Lib = list(product((0,1),(0,1),(0,1)))	#List of 3 bit binary numbers equal to index
+LED_Lst = [11, 13, 15]				#Pin addresses of LEDs
+Count = 0					#Counter for LEDs
 
-
-# Logic that you write
+# Function Definitions
 def main():
     print("Executing code...press any key to cancel")
     init_GPIO()
     while True:	                              #infinite loop
-        GPIO.output(11, not (GPIO.input(11))) #invert LED Output
-        GPIO.output(13, not (GPIO.input(13))) #invert LED Output
-        GPIO.output(15, not (GPIO.input(15))) #invert LED Output
-        time.sleep(1)                         #wait for 1 second
+        time.sleep(10)                         #wait for 10 seconds each iteration
 
 def init_GPIO():
+    global LED_Lst
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(11, GPIO.OUT)       #set pin 11 as Out for LED1
-    GPIO.setup(13, GPIO.OUT)       #set pin 13 as Out for LED2
-    GPIO.setup(15, GPIO.OUT)       #set pin 15 as Out for LED3
+    GPIO.setup(LED_Lst, GPIO.OUT)       #set pins 11, 13, 15 for LED0-2
     GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP) #set pin 16 as In for SW0 with pull-up
     GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP) #set pin 18 as In for SW1 with pull-up
+    GPIO.add_event_detect(16, GPIO.RISING, callback=Increase, bouncetime=200)  # add rising edge detection on SW0 for Increase
+    GPIO.add_event_detect(18, GPIO.RISING, callback=Decrease, bouncetime=200)  # add rising edge detection on SW1 for Decrease
 
-# Only run the functions if 
+def Increase(channel):                       #SW0 pressed, Increase LEDs
+    global LED_Lib
+    global LED_Lst
+    global Count
+    if Count == 7:                      #If 8: Overflow to 0
+        Count = 0
+    else:                               #Else: Increment LEDs
+        Count +=1
+    GPIO.output(LED_Lst,LED_Lib[Count]) #Update LEDs
+
+def Decrease(channel):                       #SW1 pressed, decrease LEDs
+    global LED_Lib
+    global LED_Lst
+    global Count
+    if Count == 0:                      #If 0: Overflow to 8
+        Count = 7
+    else:                               #Else: Decrement LEDs
+        Count -=1
+    GPIO.output(LED_Lst,LED_Lib[Count]) #Update LEDs
+
+# Only run the functions if
 if __name__ == "__main__":
     # Make sure the GPIO is stopped correctly
     try:
