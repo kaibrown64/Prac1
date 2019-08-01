@@ -13,7 +13,7 @@ from itertools import product
 
 # Global Variables
 LED_Lib = list(product((0,1),(0,1),(0,1)))	#List of 3 bit binary numbers equal to index
-LED_Lst = [11, 13, 15]				#Pin addresses of LEDs
+LED_Lst = [15, 13, 11]				#Pin addresses of LEDs
 Count = 0					#Counter for LEDs
 
 # Function Definitions
