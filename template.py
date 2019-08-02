@@ -19,7 +19,6 @@ Count = 0					#Counter for LEDs
 # Function Definitions
 def main():
     print("Executing code...press any key to cancel")
-    init_GPIO()
     while True:	                              #infinite loop
         time.sleep(10)                         #wait for 10 seconds each iteration
 
@@ -57,6 +56,7 @@ if __name__ == "__main__":
     # Make sure the GPIO is stopped correctly
     try:
         while True:
+            init_GPIO()
             main()
     except KeyboardInterrupt:
         print("Exiting gracefully")
